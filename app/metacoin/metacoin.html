@@ -1,4 +1,7 @@
-<div class="container">
+<div ng-if="vm.downLoadMetaMask" class="downloadMetaMask">
+<h1>Download MetaMask</h1>
+</div>
+<div class="container" ng-if="!vm.downLoadMetaMask">
 <h5><b>Chairperson:</b> {{vm.chairpersonAddress}}</h5>
 <h5><b>Pot:</b> {{vm.contractBalance}}</h5>
 <h5 ng-if="vm.status">{{vm.status}} - 

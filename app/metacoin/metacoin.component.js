@@ -11,91 +11,99 @@ let metacoinComponent = {
 		
 		const vm = this;
 		vm.title = metacoinService.title();
+		vm.downLoadMetaMask = false;
 
-		// Connect Web3 Instance
-		var web3Query = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/AyifF0rnvHClXpU46hu9"));
-		var contractAbi = metacoinJson;
-		var contractAddress = '0x9B78e854A6c18f7a2Db9736C9f5404568a9b8Da4';
-		var contract = web3.eth.contract(contractAbi).at(contractAddress);
-		
-		var pending = (txn) => {
-			vm.status = 'Pending TXN';
-			vm.currentTxn = txn;
-			vm.linkTxn = `https://ropsten.etherscan.io/tx/${txn}`;
-			var pendingInterval;
-			pendingInterval = $interval(()=>{
-				if (!web3Query.eth.getTransactionReceipt(txn)) {
-					console.log('pending...')	
-				} else {
-					vm.status = 'TXN in blockchain';
-					$timeout(()=>{
-						getContractBalance();
-					},1000)
-					$interval.cancel(pendingInterval);
-				}
-			},1000)
+		window.onload = () => {
+			(typeof web3 !== 'undefined') ? web3Present() : vm.downLoadMetaMask = true;
 		}
 
-		var init = () => {
-			getChairpersonAddress();
-			getContractBalance();
-		}
-		
-		// SETTERS
-		vm.sendEthToContract = () => {
-			contract.sendEthToContract.sendTransaction({
-        from: web3.eth.accounts[0],
-        value: web3.toWei(.01, 'ether')
-      }, function(err, result) {
-        if (!err) {
-        	pending(result);
-        } else {
-          console.log(err);
-        }
-      })
-		}
+		var web3Present = () => {
 
-		vm.sendContractEthToChairperson = () => {
-			contract.sendContractEthToChairperson.sendTransaction({
-        from: web3.eth.accounts[0]
-      }, function(err, result) {
-        if (!err) {
-        	pending(result);
-        } else {
-          console.log(err);
-        }
-      })
-		}
+			// Connect Web3 Instance
+			var web3Query = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/AyifF0rnvHClXpU46hu9"));
+			var contractAbi = metacoinJson;
+			var contractAddress = '0x9B78e854A6c18f7a2Db9736C9f5404568a9b8Da4';
+			var contract = web3.eth.contract(contractAbi).at(contractAddress);
+			
+			var pending = (txn) => {
+				vm.status = 'Pending TXN';
+				vm.currentTxn = txn;
+				vm.linkTxn = `https://ropsten.etherscan.io/tx/${txn}`;
+				var pendingInterval;
+				pendingInterval = $interval(()=>{
+					if (!web3Query.eth.getTransactionReceipt(txn)) {
+						console.log('pending...')	
+					} else {
+						vm.status = 'TXN in blockchain';
+						$timeout(()=>{
+							getContractBalance();
+						},1000)
+						$interval.cancel(pendingInterval);
+					}
+				},1000)
+			}
 
-		
-		// GETTERS
-		var getChairpersonAddress = () => {
-			contract.getChairpersonAddress.call((err, result) => {
-				if(!err) {
-					// console.log(result)
-					vm.chairpersonAddress = result;
-				} else {
-					// console.log(err);
-					vm.chairpersonAddress = err;
-				}
-				$scope.$apply();
-			});
-		}
+			var init = () => {
+				getChairpersonAddress();
+				getContractBalance();
+			}
+			
+			// SETTERS
+			vm.sendEthToContract = () => {
+				contract.sendEthToContract.sendTransaction({
+					from: web3.eth.accounts[0],
+					value: web3.toWei(.01, 'ether')
+				}, function(err, result) {
+					if (!err) {
+						pending(result);
+					} else {
+						console.log(err);
+					}
+				})
+			}
 
-		var getContractBalance = () => {
-			contract.getContractBalance.call((err, result) => {
-				if(!err) {
-					// console.log(web3.fromWei(result, 'ether').toNumber());
-					vm.contractBalance = `${web3.fromWei(result, 'ether').toNumber()} ETH`;
-				} else {
-					// console.log(err);
-					vm.contractBalance = err;
-				}
-				$scope.$apply();
-			});
-		}
+			vm.sendContractEthToChairperson = () => {
+				contract.sendContractEthToChairperson.sendTransaction({
+					from: web3.eth.accounts[0]
+				}, function(err, result) {
+					if (!err) {
+						pending(result);
+					} else {
+						console.log(err);
+					}
+				})
+			}
 
-		init();
+			
+			// GETTERS
+			var getChairpersonAddress = () => {
+				contract.getChairpersonAddress.call((err, result) => {
+					if(!err) {
+						// console.log(result)
+						vm.chairpersonAddress = result;
+					} else {
+						// console.log(err);
+						vm.chairpersonAddress = err;
+					}
+					$scope.$apply();
+				});
+			}
+
+			var getContractBalance = () => {
+				contract.getContractBalance.call((err, result) => {
+					if(!err) {
+						// console.log(web3.fromWei(result, 'ether').toNumber());
+						vm.contractBalance = `${web3.fromWei(result, 'ether').toNumber()} ETH`;
+					} else {
+						// console.log(err);
+						vm.contractBalance = err;
+					}
+					$scope.$apply();
+				});
+			}
+
+			init();
+		}
 
 	}
 
