@@ -37,7 +37,7 @@ let metacoinComponent = {
 						vm.status = 'TXN in blockchain';
 						$timeout(()=>{
 							getContractBalance();
-						},1000)
+						},300)
 						$interval.cancel(pendingInterval);
 					}
 				},1000)
