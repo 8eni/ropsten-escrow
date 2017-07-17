@@ -1,16 +1,8 @@
 <div class="container">
-<h5 ng-if="vm.currentTxn">{{vm.chairpersonAddress}} - 
+<h5><b>Chairperson:</b> {{vm.chairpersonAddress}}</h5>
+<h5><b>Pot:</b> {{vm.contractBalance}}</h5>
+<h5 ng-if="vm.status">{{vm.status}} - 
   <a href="{{vm.linkTxn}}" target="_blank">{{vm.currentTxn}}</a></h5>
-<button type="button" 
-  ng-click="vm.getChairpersonAddress()" 
-  class="btn btn-primary btn-lg btn-block">
-  get Chairperson Address
-</button>
-<button type="button" 
-  ng-click="vm.getContractBalance()" 
-  class="btn btn-primary btn-lg btn-block">
-  get Contract Balance
-</button>
 
 <button type="button" 
   ng-click="vm.sendEthToContract()" 
@@ -23,5 +15,5 @@
   class="btn btn-primary btn-lg btn-block">
   send Contract Eth To Chairperson
 </button>
-
+<br>
 </div>
